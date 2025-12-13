@@ -95,6 +95,31 @@ public class RegistrationsController : ControllerBase
         return Ok(registrations);
     }
 
+    [HttpGet("date-year")]
+    public IActionResult GetRegistrationByYear(int year)
+    {
+        if (year < 2025)
+        {
+            return BadRequest();
+        }
+
+        if (year > DateTime.UtcNow.Year)
+        {
+            return BadRequest();
+        }
+
+        var registrations = _dbContext.Registrations
+            .Where(x => x.RegistrationDate.Year == year)
+            .ToList();
+
+        if (!registrations.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(registrations);
+    }
+
     [HttpPut("{id}")]
     public IActionResult UpdateRegistration(int id, Registration registration)
     {
