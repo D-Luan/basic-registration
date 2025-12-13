@@ -64,4 +64,20 @@ public class RegistrationsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteRegistration(int id)
+    {
+        var registration = _dbContext.Registrations.Find(id);
+
+        if (registration == null)
+        {
+            return NotFound();
+        }
+
+        _dbContext.Registrations.Remove(registration);
+        _dbContext.SaveChanges();
+
+        return NoContent();
+    }
 }
