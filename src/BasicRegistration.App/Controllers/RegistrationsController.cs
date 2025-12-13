@@ -60,6 +60,21 @@ public class RegistrationsController : ControllerBase
         return Ok(registrations);
     }
 
+    [HttpGet("birth-date")]
+    public IActionResult GetRegistrationByBirthDate(DateOnly date)
+    {
+        var registrations = _dbContext.Registrations
+            .Where(x => x.BirthDate == date)
+            .ToList();
+
+        if (!registrations.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(registrations);
+    }
+
     [HttpPut("{id}")]
     public IActionResult UpdateRegistration(int id, Registration registration)
     {
