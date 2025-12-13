@@ -45,6 +45,21 @@ public class RegistrationsController : ControllerBase
         return Ok(registration);
     }
 
+    [HttpGet("date")]
+    public IActionResult GetRegistrationByDate(DateTime date)
+    {
+        var registrations = _dbContext.Registrations
+            .Where(x => x.RegistrationDate.Date == date.Date)
+            .ToList();
+
+        if (!registrations.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(registrations);
+    }
+
     [HttpPut("{id}")]
     public IActionResult UpdateRegistration(int id, Registration registration)
     {
