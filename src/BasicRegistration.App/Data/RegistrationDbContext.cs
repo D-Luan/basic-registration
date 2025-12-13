@@ -10,5 +10,5 @@ public class RegistrationDbContext : DbContext
     {
     }
 
-    DbSet<Registration> Registrations { get; set; } = null!;
+    public DbSet<Registration> Registrations { get; set; } = null!;
 }

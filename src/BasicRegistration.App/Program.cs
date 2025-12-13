@@ -3,10 +3,12 @@ using BasicRegistration.App.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<RegistrationDbContext>(options =>
     options.UseInMemoryDatabase("Registration"));
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
