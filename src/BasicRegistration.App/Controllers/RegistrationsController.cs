@@ -31,4 +31,11 @@ public class RegistrationsController : ControllerBase
         var registrations = _dbContext.Registrations.ToList();
         return Ok(registrations);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetRegistrationById(int id)
+    {
+        var registration = _dbContext.Registrations.Find(id);
+        return Ok(registration);
+    }
 }
