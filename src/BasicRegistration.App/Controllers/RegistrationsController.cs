@@ -36,6 +36,32 @@ public class RegistrationsController : ControllerBase
     public IActionResult GetRegistrationById(int id)
     {
         var registration = _dbContext.Registrations.Find(id);
+
+        if (registration == null)
+        {
+            return NotFound();
+        }
+
         return Ok(registration);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateRegistration(int id, Registration registration)
+    {
+        var newRegistration = _dbContext.Registrations.Find(id);
+
+        if (newRegistration == null)
+        {
+            return NotFound();
+        }
+
+        newRegistration.Name = registration.Name;
+        newRegistration.BirthDate = registration.BirthDate;
+        newRegistration.State = registration.State;
+        newRegistration.RegistrationDate = registration.RegistrationDate;
+
+        _dbContext.SaveChanges();
+
+        return NoContent();
     }
 }
