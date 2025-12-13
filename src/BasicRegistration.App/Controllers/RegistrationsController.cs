@@ -75,6 +75,26 @@ public class RegistrationsController : ControllerBase
         return Ok(registrations);
     }
 
+    [HttpGet("date-month")]
+    public IActionResult GetRegistrationByMonth(int month)
+    {
+        if (month < 1 || month > 12)
+        {
+            return BadRequest();
+        }
+
+        var registrations = _dbContext.Registrations
+            .Where(x => x.RegistrationDate.Month == month)
+            .ToList();
+
+        if (!registrations.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(registrations);
+    }
+
     [HttpPut("{id}")]
     public IActionResult UpdateRegistration(int id, Registration registration)
     {
