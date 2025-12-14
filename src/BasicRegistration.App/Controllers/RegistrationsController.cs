@@ -60,11 +60,11 @@ public class RegistrationsController : ControllerBase
         return Ok(registrations);
     }
 
-    [HttpGet("birth-date")]
-    public IActionResult GetRegistrationByBirthDate(DateOnly date)
+    [HttpGet("birth-month")]
+    public IActionResult GetRegistrationByBirthDate(int month)
     {
         var registrations = _dbContext.Registrations
-            .Where(x => x.BirthDate == date)
+            .Where(x => x.BirthDate.Month == month)
             .ToList();
 
         if (!registrations.Any())
@@ -110,6 +110,21 @@ public class RegistrationsController : ControllerBase
 
         var registrations = _dbContext.Registrations
             .Where(x => x.RegistrationDate.Year == year)
+            .ToList();
+
+        if (!registrations.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(registrations);
+    }
+
+    [HttpGet("hour")]
+    public IActionResult GetRegistrationByTime(int hour)
+    {
+        var registrations = _dbContext.Registrations
+            .Where(x => x.RegistrationDate.Hour == hour)
             .ToList();
 
         if (!registrations.Any())
