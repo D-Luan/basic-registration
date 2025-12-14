@@ -44,88 +44,65 @@ public class RegistrationsController : ControllerBase
 
         return Ok(registration);
     }
-
-    [HttpGet("date")]
-    public IActionResult GetRegistrationByDate(DateTime date)
+    
+    [HttpGet("search")]
+    public IActionResult Search(DateTime? date, int? month, int? year, int? birthYear, int? birthMonth, int? hour)
     {
-        var registrations = _dbContext.Registrations
-            .Where(x => x.RegistrationDate.Date == date.Date)
-            .ToList();
+        var query = _dbContext.Registrations.AsQueryable();
 
-        if (!registrations.Any())
+        if (date.HasValue)
         {
-            return NotFound();
+            query = query.Where(x => x.RegistrationDate.Date == date.Value.Date);
+        }
+        else
+        {
+            if (month.HasValue)
+            {
+                if (month < 1 || month > 12)
+                {
+                    return BadRequest();
+                }
+
+                query = query.Where(x => x.RegistrationDate.Month == month.Value);
+            }
+
+            if (year.HasValue)
+            {
+                if (year < 2025)
+                {
+                    return BadRequest();
+                }
+
+                query = query.Where(x => x.RegistrationDate.Year == year.Value);
+            }
         }
 
-        return Ok(registrations);
-    }
-
-    [HttpGet("birth-month")]
-    public IActionResult GetRegistrationByBirthDate(int month)
-    {
-        var registrations = _dbContext.Registrations
-            .Where(x => x.BirthDate.Month == month)
-            .ToList();
-
-        if (!registrations.Any())
+        if (birthYear.HasValue)
         {
-            return NotFound();
+            query = query.Where(x => x.BirthDate.Year == birthYear);
         }
 
-        return Ok(registrations);
-    }
-
-    [HttpGet("date-month")]
-    public IActionResult GetRegistrationByMonth(int month)
-    {
-        if (month < 1 || month > 12)
+        if (birthMonth.HasValue)
         {
-            return BadRequest();
+            if (birthMonth < 1 || birthMonth > 12)
+            {
+                return BadRequest();
+            }
+
+            query = query.Where(x => x.BirthDate.Month == birthMonth.Value);
         }
 
-        var registrations = _dbContext.Registrations
-            .Where(x => x.RegistrationDate.Month == month)
-            .ToList();
-
-        if (!registrations.Any())
+        if (hour.HasValue)
         {
-            return NotFound();
+            if (hour < 0 || hour > 23)
+            {
+                return BadRequest();
+            }
+
+            query = query.Where(x => x.RegistrationDate.Hour == hour);
         }
 
-        return Ok(registrations);
-    }
-
-    [HttpGet("date-year")]
-    public IActionResult GetRegistrationByYear(int year)
-    {
-        if (year < 2025)
-        {
-            return BadRequest();
-        }
-
-        if (year > DateTime.UtcNow.Year)
-        {
-            return BadRequest();
-        }
-
-        var registrations = _dbContext.Registrations
-            .Where(x => x.RegistrationDate.Year == year)
-            .ToList();
-
-        if (!registrations.Any())
-        {
-            return NotFound();
-        }
-
-        return Ok(registrations);
-    }
-
-    [HttpGet("hour")]
-    public IActionResult GetRegistrationByTime(int hour)
-    {
-        var registrations = _dbContext.Registrations
-            .Where(x => x.RegistrationDate.Hour == hour)
-            .ToList();
+        var registrations = query.ToList();
 
         if (!registrations.Any())
         {
